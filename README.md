@@ -154,3 +154,17 @@ You will design and implement these, including minimal tests to validate the dat
 ---
 
 Remember, the goal is to demonstrate clear reasoning, good software design, and thoughtful tradeoffs. Feel free to ask questions.
+
+---
+
+# My Phase 1 Architecture & Implementation
+
+## issues with the codebase & Solutions:
+
+- RecordList has too many responsibilities. Currently RecordSummary is unused and contains repeated code for derived counts for each status category and displaying them as cards that is already present in RecordList. A simple fix would be to remove the duplicate code from RecordList and use RecordSummary instead. In the current state RecordList is a god component as it is already fetching, rendering the list of records, summary, and history. RecordSummary could be reused elswhere in the app making the codebase more modular.
+
+
+
+
+
+

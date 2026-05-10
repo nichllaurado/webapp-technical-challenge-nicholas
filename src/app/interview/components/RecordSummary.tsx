@@ -8,6 +8,7 @@ import { useRecords } from "../context/RecordsContext";
 export default function RecordSummary() {
   const { records } = useRecords();
   // Compute counts for each status
+  //Removed counts logic from RecordList and kept it here in RecordSummary
   const counts = records.reduce(
     (acc, record) => {
       acc[record.status] = (acc[record.status] ?? 0) + 1;

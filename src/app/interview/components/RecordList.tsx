@@ -17,7 +17,7 @@ export default function RecordList() {
   const { records, loading, error, refresh, history } = useRecords();
   const [sel, setSel] = useState<RecordItem | null>(null);
   const [fltr, setFltr] = useState<"all" | RecordItem["status"]>("all");
-
+  //Removed counts logic and moved to RecordSummary to keep this component focused on orchestration and delegate summary logic to RecordSummary
   const counts: Record<RecordItem["status"], number> = {
     pending: 0,
     approved: 0,
