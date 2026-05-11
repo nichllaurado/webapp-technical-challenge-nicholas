@@ -58,7 +58,7 @@ export function RecordsProvider({ children }: { children: React.ReactNode }) {
       const prev = records.find((r) => r.id === id);
       const updated = await patchRecord(id, updates); // throws on failure — caller handles display
       setRecords((rs) => rs.map((r) => (r.id === updated.id ? updated : r)));
-      if (prev && updates.status && prev.status !== updates.status) {
+      if (prev && updates.status && prev.status !== updated.status) {
         setHistory((h) => [
           ...h,
           {
