@@ -176,3 +176,15 @@ Remember, the goal is to demonstrate clear reasoning, good software design, and 
 - The useRecords hook is unused. All components import directly from the context file. The hooks directory has no function at runtime. All uses of useRecords should import from hooks/ dir to maintain consistency.
 
 - Error handling in RecordsContext is slightly flawed. doUpdate both sets context error state and throws so the error shows up twice. 
+
+# Phase 2 Implementation:
+
+- Review Actions are funcitonal.
+
+- Filter is functional.
+
+- Summary is updated in realtime.
+
+- History Log is functional.
+
+- Pagination is implemented with limit of 6 record cards per page.

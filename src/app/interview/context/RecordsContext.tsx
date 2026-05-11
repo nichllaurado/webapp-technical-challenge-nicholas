@@ -27,6 +27,14 @@ interface RecordsContextValue {
   history: RecordHistoryEntry[];
   /** Clears the in-memory history log. */
   clearHistory: () => void;
+  /** Current 1-based page number. */
+  page: number;
+  /** Number of records per page. */
+  limit: number;
+  /** Total record count across all pages. */
+  totalCount: number;
+  /** Navigate to a specific page. */
+  setPage: (page: number) => void;
 }
 
 const RecordsContext = createContext<RecordsContextValue | undefined>(undefined);
@@ -36,18 +44,27 @@ export function RecordsProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [history, setHistory] = useState<RecordHistoryEntry[]>([]);
+  const [page, setPageState] = useState<number>(1);
+  const limit = 6;
+  const [totalCount, setTotalCount] = useState<number>(0);
+
+  const setPage = useCallback((newPage: number) => {
+    setPageState(newPage);
+  }, []);
 
   const refresh = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      setRecords(await getRecords());
+      const { records: pageRecords, totalCount: total } = await getRecords(page, limit);
+      setRecords(pageRecords);
+      setTotalCount(total);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Unknown error');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [page, limit]);
 
   useEffect(() => {
     refresh();
@@ -81,7 +98,7 @@ export function RecordsProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <RecordsContext.Provider
-      value={{ records, loading, error, updateRecord, refresh, history, clearHistory }}
+      value={{ records, loading, error, updateRecord, refresh, history, clearHistory, page, limit, totalCount, setPage }}
     >
       {children}
     </RecordsContext.Provider>

@@ -17,11 +17,19 @@ import { Button } from "@/components/ui/button";
  * handling selection to open the detail dialog.
  */
 export default function RecordList() {
-  const { records, loading, error, refresh } = useRecords();
+  const { records, loading, error, refresh, page, limit, totalCount, setPage } = useRecords();
   const [sel, setSel] = useState<RecordItem | null>(null);
   const [fltr, setFltr] = useState<"all" | RecordItem["status"]>("all");
   const display = fltr === "all" ? records : records.filter((r) => r.status === fltr);
 
+  const totalPages = Math.ceil(totalCount / limit);
+  const isPrevDisabled = page === 1;
+  const isNextDisabled = page * limit >= totalCount;
+
+  function handleFilterChange(value: "all" | RecordItem["status"]) {
+    setFltr(value);
+    setPage(1);
+  }
 
   return (
     <div className="space-y-6">
@@ -31,12 +39,12 @@ export default function RecordList() {
             Records
           </h2>
           <p className="text-sm text-muted-foreground">
-            {records.length} total • {display.length} showing
+            {totalCount} total • {display.length} showing
           </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="w-56">
-            <RecordFilter value={fltr} onChange={setFltr} />
+            <RecordFilter value={fltr} onChange={handleFilterChange} />
           </div>
           <Button variant="ghost" onClick={() => refresh()} disabled={loading}>
             Reload
@@ -53,10 +61,35 @@ export default function RecordList() {
           <RecordCard key={record.id} record={record} onSelect={setSel} />
         ))}
       </div>
-      {sel && <RecordDetailDialog record={sel} onClose={() => setSel(null)} />}
-      {records.length === 0 && !loading && !error && (
-        <p className="text-sm text-muted-foreground">No records found.</p>
+      {display.length === 0 && !loading && !error && (
+        <p className="text-sm text-muted-foreground">
+          {fltr !== "all"
+            ? `No ${fltr.replace("_", " ")} records on this page.`
+            : "No records on this page."}
+        </p>
       )}
+      <div className="flex items-center justify-between pt-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setPage(page - 1)}
+          disabled={isPrevDisabled || loading}
+        >
+          Prev
+        </Button>
+        <span className="text-sm text-muted-foreground">
+          Page {page} of {totalPages || 1}
+        </span>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setPage(page + 1)}
+          disabled={isNextDisabled || loading}
+        >
+          Next
+        </Button>
+      </div>
+      {sel && <RecordDetailDialog record={sel} onClose={() => setSel(null)} />}
       <HistoryLog />
     </div>
   );
