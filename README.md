@@ -165,14 +165,14 @@ Remember, the goal is to demonstrate clear reasoning, good software design, and 
 
 - In RecordContext, there are two names for everything: abbreviated internal (data, busy, err, log, doUpdate, reLoad, purgeLog) vs descriptive public (records, loading, error, history, updateRecord, refresh, clearHistory). Simple fix would be to replace internal naming w public names.
 
-- No unique key for history entries — RecordHistoryEntry.id is the record id, not an entry id.
+- No unique key for history entries. RecordHistoryEntry.id is the record id, not an entry id. Simple fix would be adding entryId as a unique key to RecordHistoryEntry type.
 
-- RecordsContext makes fetch calls to the api. The context should only manage react state. An Api service layer script could be added to make requests for RecordsContext.
+- RecordsContext makes fetch calls to the api. The context should only manage react state. An Api service layer script could be added to make requests for RecordsContext. New directory for services with recordsApi.ts could manage http requests.
 
 - Logic for counting records of each status type is present in RecordSummary and RecordList. This could be turned into a hook for derived state.
 
-- HistoryLog mixes data access and rendering. A container/presenter split should be applied here.
+- HistoryLog mixes data access and rendering. A container/presenter split should be applied here. The fix would be to create HistoryLogView.tsx to act as presenter and make HistoryLog the container component.
 
-- The useRecords hook is unused. All components import directly from the context file. The hooks directory has no function at runtime.
+- The useRecords hook is unused. All components import directly from the context file. The hooks directory has no function at runtime. All uses of useRecords should import from hooks/ dir to maintain consistency.
 
-- Error handling in RecordsContext is slightly flawed. doUpdate both sets context error state and re-throws so the error shows up twice.
+- Error handling in RecordsContext is slightly flawed. doUpdate both sets context error state and throws so the error shows up twice. 

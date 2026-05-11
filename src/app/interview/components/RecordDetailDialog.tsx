@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 
 import type { RecordItem, RecordStatus } from "../types";
+import { useRecords } from "../hooks/useRecords";
 
 interface RecordDetailDialogProps {
   record: RecordItem;
@@ -37,8 +38,24 @@ export default function RecordDetailDialog({
   record,
   onClose,
 }: RecordDetailDialogProps) {
+  const { updateRecord } = useRecords();
   const [status, setStatus] = useState<RecordStatus>(record.status);
   const [note, setNote] = useState<string>(record.note ?? "");
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  async function doUpdate() {
+    setSaving(true);
+    setSaveError(null);
+    try {
+      await updateRecord(record.id, { status, note });
+      onClose();
+    } catch (e) {
+      setSaveError(e instanceof Error ? e.message : "Save failed");
+    } finally {
+      setSaving(false);
+    }
+  }
+
   const statusOptions: RecordStatus[] = [
     "pending",
     "approved",
@@ -91,11 +108,16 @@ export default function RecordDetailDialog({
             </p>
           </div>
         </div>
+        {saveError && (
+          <p className="text-sm text-destructive">{saveError}</p>
+        )}
         <DialogFooter className="mt-6">
           <Button variant="secondary" onClick={() => onClose()}>
             Close
           </Button>
-          <Button variant="default">Save</Button>
+          <Button variant="default" onClick={doUpdate} disabled={saving}>
+            {saving ? "Saving…" : "Save"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

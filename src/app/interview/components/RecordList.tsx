@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 
-import { useRecords } from "../context/RecordsContext";
+import { useRecords } from "../hooks/useRecords";
+import { useRecordStatusCounts } from "../hooks/useRecordStatusCounts";
 import type { RecordItem } from "../types";
 import RecordCard from "./RecordCard";
 import RecordDetailDialog from "./RecordDetailDialog";
@@ -17,17 +18,7 @@ export default function RecordList() {
   const { records, loading, error, refresh, history } = useRecords();
   const [sel, setSel] = useState<RecordItem | null>(null);
   const [fltr, setFltr] = useState<"all" | RecordItem["status"]>("all");
-  //Removed counts logic and moved to RecordSummary to keep this component focused on orchestration and delegate summary logic to RecordSummary
-  const counts: Record<RecordItem["status"], number> = {
-    pending: 0,
-    approved: 0,
-    flagged: 0,
-    needs_revision: 0,
-  };
-  records.forEach((item) => {
-    counts[item.status] += 1;
-  });
-
+  const counts = useRecordStatusCounts();
   const display = records;
 
   return (
@@ -99,9 +90,9 @@ export default function RecordList() {
         </h3>
         {history && history.length > 0 ? (
           <ul className="space-y-2 max-h-60 overflow-y-auto pr-2">
-            {history.map((entry, idx: number) => (
+            {history.map((entry) => (
               <li
-                key={idx}
+                key={entry.entryId}
                 className="text-xs border rounded-md p-2 bg-card/50"
               >
                 <div className="flex justify-between items-center">

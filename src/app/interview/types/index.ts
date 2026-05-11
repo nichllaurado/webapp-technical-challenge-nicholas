@@ -21,7 +21,9 @@ export interface RecordItem {
  * entries.
  */
 export interface RecordHistoryEntry {
-  /** Unique identifier of the record whose status changed */
+  /** Unique identifier for this history entry (not the record id) */
+  entryId: string;
+  /** Identifier of the record whose status changed */
   id: string;
   /** The status before the update */
   previousStatus: RecordStatus;

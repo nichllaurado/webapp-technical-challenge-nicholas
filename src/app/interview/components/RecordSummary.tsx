@@ -1,27 +1,14 @@
 import type { RecordStatus } from "../types";
-import { useRecords } from "../context/RecordsContext";
+import { useRecordStatusCounts } from "../hooks/useRecordStatusCounts";
+
+const STATUSES: RecordStatus[] = ["pending", "approved", "flagged", "needs_revision"];
 
 /**
- * RecordSummary computes derived counts by status from the current record set
- * provided by RecordsContext and renders them as a lightweight dashboard.
+ * RecordSummary renders a status count dashboard derived from RecordsContext.
  */
 export default function RecordSummary() {
-  const { records } = useRecords();
-  // Compute counts for each status
-  //Removed counts logic from RecordList and kept it here in RecordSummary
-  const counts = records.reduce(
-    (acc, record) => {
-      acc[record.status] = (acc[record.status] ?? 0) + 1;
-      return acc;
-    },
-    {} as Record<RecordStatus, number>,
-  );
-  const statuses: RecordStatus[] = [
-    "pending",
-    "approved",
-    "flagged",
-    "needs_revision",
-  ];
+  const counts = useRecordStatusCounts();
+  const statuses = STATUSES;
   return (
     <section aria-label="Record status summary" className="space-y-3">
       <div className="flex items-baseline justify-between">
