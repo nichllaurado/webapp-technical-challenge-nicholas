@@ -188,3 +188,11 @@ Remember, the goal is to demonstrate clear reasoning, good software design, and 
 - History Log is functional.
 
 - Pagination is implemented with limit of 6 record cards per page.
+
+# UI/UX Changes:
+
+- review button reacts more dramatically to user cursor
+
+- needs revision & flagged use different color schemes
+
+- removed reload button. Filter change already prompts reload.

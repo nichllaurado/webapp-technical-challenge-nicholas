@@ -31,7 +31,7 @@ const statusToVariant: Record<
   pending: "secondary",
   approved: "default",
   flagged: "destructive",
-  needs_revision: "destructive",
+  needs_revision: "warning",
 };
 
 export default function RecordCard({ record, onSelect }: RecordCardProps) {
@@ -60,7 +60,11 @@ export default function RecordCard({ record, onSelect }: RecordCardProps) {
         </CardContent>
       )}
       <CardFooter className="border-t pt-4 flex justify-end">
-        <Button variant="secondary" onClick={() => onSelect(record)}>
+        <Button
+          variant="secondary"
+          onClick={() => onSelect(record)}
+          className="transition-all duration-150 hover:scale-105 hover:shadow-md hover:bg-primary hover:text-primary-foreground active:scale-95"
+        >
           Review
         </Button>
       </CardFooter>

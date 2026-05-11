@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
  * handling selection to open the detail dialog.
  */
 export default function RecordList() {
-  const { records, loading, error, refresh, page, limit, totalCount, setPage } = useRecords();
+  const { records, loading, error, page, limit, totalCount, setPage } = useRecords();
   const [sel, setSel] = useState<RecordItem | null>(null);
   const [fltr, setFltr] = useState<"all" | RecordItem["status"]>("all");
   const display = fltr === "all" ? records : records.filter((r) => r.status === fltr);
@@ -42,13 +42,8 @@ export default function RecordList() {
             {totalCount} total • {display.length} showing
           </p>
         </div>
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="w-56">
-            <RecordFilter value={fltr} onChange={handleFilterChange} />
-          </div>
-          <Button variant="ghost" onClick={() => refresh()} disabled={loading}>
-            Reload
-          </Button>
+        <div className="w-56">
+          <RecordFilter value={fltr} onChange={handleFilterChange} />
         </div>
       </div>
       {error && <p className="text-sm text-destructive">Error: {error}</p>}
