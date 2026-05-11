@@ -189,6 +189,13 @@ Remember, the goal is to demonstrate clear reasoning, good software design, and 
 
 - Pagination is implemented with limit of 6 record cards per page.
 
+# Unit Tests:
+
+- added unit tests for RecordDetailDialog for Validation Failsure and Successful update.
+
+- added unit tests for RecordList for filtering, history log changes, and summary counts.
+
+
 # UI/UX Changes:
 
 - review button reacts more dramatically to user cursor
