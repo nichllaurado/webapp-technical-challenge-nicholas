@@ -7,6 +7,7 @@ import type { RecordItem } from "../types";
 import RecordCard from "./RecordCard";
 import RecordDetailDialog from "./RecordDetailDialog";
 import RecordSummary from "./RecordSummary";
+import RecordFilter from "./RecordFilter";
 import { Button } from "@/components/ui/button";
 
 /**
@@ -18,7 +19,8 @@ export default function RecordList() {
   const { records, loading, error, refresh, history } = useRecords();
   const [sel, setSel] = useState<RecordItem | null>(null);
   const [fltr, setFltr] = useState<"all" | RecordItem["status"]>("all");
-  const display = records;
+  const display = fltr === "all" ? records : records.filter((r) => r.status === fltr);
+
 
   return (
     <div className="space-y-6">
@@ -33,22 +35,7 @@ export default function RecordList() {
         </div>
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="w-56">
-            <label className="block text-sm font-medium mb-1">
-              Filter by status
-            </label>
-            <select
-              value={fltr}
-              onChange={(e) =>
-                setFltr(e.target.value as "all" | RecordItem["status"])
-              }
-              className="w-full border rounded-md p-2 text-sm bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <option value="all">all</option>
-              <option value="pending">pending</option>
-              <option value="approved">approved</option>
-              <option value="flagged">flagged</option>
-              <option value="needs_revision">needs_revision</option>
-            </select>
+            <RecordFilter value={fltr} onChange={setFltr} />
           </div>
           <Button variant="ghost" onClick={() => refresh()} disabled={loading}>
             Reload
