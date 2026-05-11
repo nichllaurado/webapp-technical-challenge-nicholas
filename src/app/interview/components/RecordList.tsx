@@ -3,10 +3,10 @@
 import { useState } from "react";
 
 import { useRecords } from "../hooks/useRecords";
-import { useRecordStatusCounts } from "../hooks/useRecordStatusCounts";
 import type { RecordItem } from "../types";
 import RecordCard from "./RecordCard";
 import RecordDetailDialog from "./RecordDetailDialog";
+import RecordSummary from "./RecordSummary";
 import { Button } from "@/components/ui/button";
 
 /**
@@ -18,7 +18,6 @@ export default function RecordList() {
   const { records, loading, error, refresh, history } = useRecords();
   const [sel, setSel] = useState<RecordItem | null>(null);
   const [fltr, setFltr] = useState<"all" | RecordItem["status"]>("all");
-  const counts = useRecordStatusCounts();
   const display = records;
 
   return (
@@ -60,21 +59,7 @@ export default function RecordList() {
       {loading && (
         <p className="text-sm text-muted-foreground">Loading records...</p>
       )}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
-        {(Object.keys(counts) as Array<keyof typeof counts>).map((status) => (
-          <div
-            key={status}
-            className="rounded-lg border bg-card/50 p-3 sm:p-4 flex flex-col items-center justify-center capitalize shadow-sm hover:bg-card transition-colors"
-          >
-            <span className="text-xs sm:text-sm text-muted-foreground">
-              {status.replace("_", " ")}
-            </span>
-            <span className="text-lg sm:text-xl font-semibold tracking-tight">
-              {counts[status]}
-            </span>
-          </div>
-        ))}
-      </div>
+      <RecordSummary />
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {display.map((record) => (
           <RecordCard key={record.id} record={record} onSelect={setSel} />

@@ -39,15 +39,34 @@ export default function RecordDetailDialog({
   onClose,
 }: RecordDetailDialogProps) {
   const { updateRecord } = useRecords();
+
   const [status, setStatus] = useState<RecordStatus>(record.status);
   const [note, setNote] = useState<string>(record.note ?? "");
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+
+  const noteRequired =
+    status === "flagged" || status === "needs_revision";
+
+  const noteMissing =
+    noteRequired && note.trim().length === 0;
+
   async function doUpdate() {
+    const trimmedNote = note.trim();
+    // Enforce that flagged or needs_revision statuses must have a non-empty note.
+    if (
+      (status === "flagged" || status === "needs_revision") &&
+      trimmedNote.length === 0
+    ) {
+      setSaveError("A reviewer note is required for Flagged or Needs Revision.");
+      return;
+    }
+
     setSaving(true);
     setSaveError(null);
+
     try {
-      await updateRecord(record.id, { status, note });
+      await updateRecord(record.id, { status, note: trimmedNote });
       onClose();
     } catch (e) {
       setSaveError(e instanceof Error ? e.message : "Save failed");
@@ -103,6 +122,11 @@ export default function RecordDetailDialog({
               placeholder="Add a note..."
               className="min-h-24"
             />
+            {noteMissing && (
+              <p className="mt-1 text-xs text-destructive">
+                A note is required for this status.
+              </p>
+            )}
             <p className="mt-1 text-xs text-muted-foreground">
               Notes help other reviewers understand decisions.
             </p>
@@ -115,7 +139,7 @@ export default function RecordDetailDialog({
           <Button variant="secondary" onClick={() => onClose()}>
             Close
           </Button>
-          <Button variant="default" onClick={doUpdate} disabled={saving}>
+          <Button variant="default" onClick={doUpdate} disabled={saving || noteMissing}>
             {saving ? "Saving…" : "Save"}
           </Button>
         </DialogFooter>
