@@ -159,12 +159,20 @@ Remember, the goal is to demonstrate clear reasoning, good software design, and 
 
 # My Phase 1 Architecture & Implementation
 
-## issues with the codebase & Solutions:
+## Issues With The Codebase & Solutions:
 
-- RecordList has too many responsibilities. Currently RecordSummary is unused and contains repeated code for derived counts for each status category and displaying them as cards that is already present in RecordList. A simple fix would be to remove the duplicate code from RecordList and use RecordSummary instead. In the current state RecordList is a god component as it is already fetching, rendering the list of records, summary, and history. RecordSummary could be reused elswhere in the app making the codebase more modular.
+- RecordList has too many responsibilities. Currently RecordSummary is handling data fetching, computing status summaries, rendering filter UI, displaying the card grid, managing dialog state, and showing the history log all in one place. This is the biggest need for separation of concerns. A simple fix would be to remove the duplicate code from RecordList and use RecordSummary instead. In the current state RecordList is a god component as it is already fetching, rendering the list of records, summary, and history. RecordSummary could be reused elswhere in the app making the codebase more modular.
 
+- In RecordContext, there are two names for everything: abbreviated internal (data, busy, err, log, doUpdate, reLoad, purgeLog) vs descriptive public (records, loading, error, history, updateRecord, refresh, clearHistory). Simple fix would be to replace internal naming w public names.
 
+- No unique key for history entries — RecordHistoryEntry.id is the record id, not an entry id.
 
+- RecordsContext makes fetch calls to the api. The context should only manage react state. An Api service layer script could be added to make requests for RecordsContext.
 
+- Logic for counting records of each status type is present in RecordSummary and RecordList. This could be turned into a hook for derived state.
 
+- HistoryLog mixes data access and rendering. A container/presenter split should be applied here.
 
+- The useRecords hook is unused. All components import directly from the context file. The hooks directory has no function at runtime.
+
+- Error handling in RecordsContext is slightly flawed. doUpdate both sets context error state and re-throws so the error shows up twice.
