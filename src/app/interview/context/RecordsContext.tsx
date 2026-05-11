@@ -65,8 +65,8 @@ export function RecordsProvider({ children }: { children: React.ReactNode }) {
             entryId: crypto.randomUUID(),
             id,
             previousStatus: prev.status,
-            newStatus: updates.status as RecordStatus,
-            note: updates.note,
+            newStatus: updated.status,
+            note: updates.note || undefined,
             timestamp: new Date().toISOString(),
           },
         ]);

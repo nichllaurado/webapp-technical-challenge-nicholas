@@ -1,3 +1,5 @@
+"use client";
+
 import { useRecords } from "../hooks/useRecords";
 import { HistoryLogView } from "./HistoryLogView";
 

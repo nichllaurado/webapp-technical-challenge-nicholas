@@ -8,6 +8,7 @@ import RecordCard from "./RecordCard";
 import RecordDetailDialog from "./RecordDetailDialog";
 import RecordSummary from "./RecordSummary";
 import RecordFilter from "./RecordFilter";
+import HistoryLog from "./HistoryLog";
 import { Button } from "@/components/ui/button";
 
 /**
@@ -16,7 +17,7 @@ import { Button } from "@/components/ui/button";
  * handling selection to open the detail dialog.
  */
 export default function RecordList() {
-  const { records, loading, error, refresh, history } = useRecords();
+  const { records, loading, error, refresh } = useRecords();
   const [sel, setSel] = useState<RecordItem | null>(null);
   const [fltr, setFltr] = useState<"all" | RecordItem["status"]>("all");
   const display = fltr === "all" ? records : records.filter((r) => r.status === fltr);
@@ -56,40 +57,7 @@ export default function RecordList() {
       {records.length === 0 && !loading && !error && (
         <p className="text-sm text-muted-foreground">No records found.</p>
       )}
-      <div className="space-y-2 mt-4">
-        <h3 className="text-base sm:text-lg font-semibold tracking-tight">
-          History
-        </h3>
-        {history && history.length > 0 ? (
-          <ul className="space-y-2 max-h-60 overflow-y-auto pr-2">
-            {history.map((entry) => (
-              <li
-                key={entry.entryId}
-                className="text-xs border rounded-md p-2 bg-card/50"
-              >
-                <div className="flex justify-between items-center">
-                  <span className="font-medium">Record {entry.id}</span>
-                  <span className="text-muted-foreground">
-                    {new Date(entry.timestamp).toLocaleString()}
-                  </span>
-                </div>
-                <div className="mt-1">
-                  {entry.previousStatus} → {entry.newStatus}
-                </div>
-                {entry.note && (
-                  <p className="mt-1 text-muted-foreground">
-                    Note: {entry.note}
-                  </p>
-                )}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-muted-foreground text-sm">
-            No status changes yet.
-          </p>
-        )}
-      </div>
+      <HistoryLog />
     </div>
   );
 }
